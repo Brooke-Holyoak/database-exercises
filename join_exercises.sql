@@ -64,4 +64,73 @@ from titles
 JOIN dept_emp ON titles.emp_no = dept_emp.emp_no
 GROUP BY titles.title;-- this is coming along, still working through it, I have a full count, now I just need to narrow it
 
+/*I saved after lunch, but apparently I didn't save between lunch and now.  So I lost everything I've done from 2ish-6.  I had it all complete, and I'll try to work through it all again... Here's what is on our germain githib for now... Mine was a bit different with really good notes too!! :(*/
+
+# Exercise 4, Find  the current titles of employees currently working in the Customer Service department.
+select title, count(title)
+from dept_emp
+join departments using(dept_no)
+join titles using(emp_no)
+where departments.dept_name = "Customer Service"
+and dept_emp.to_date > curdate()
+and titles.to_date > curdate()
+group by title
+order by title;
+
+
+-- Exercise 5. Find the current salary of all current managers.
+select dept_no, salary, concat(first_name, " ", last_name) as "Current Manager"
+from salaries
+join dept_manager using(emp_no)
+join employees using(emp_no)
+join departments using(dept_no)
+where dept_manager.to_date > curdate()
+and salaries.to_date > curdate();
+
+# Exercise 6
+# Find the number of current employees in each department.
+select dept_no, dept_name, count(*) as num_employees
+from departments
+join dept_emp using(dept_no)
+where to_date > curdate()
+group by dept_no
+order by dept_no;
+
+# Exercise 7 
+# Which department has the highest average salary? Hint: Use current not historic information.
+
+select dept_name, avg(salary) as average_salary
+from salaries
+join dept_emp using(emp_no)
+join departments using(dept_no)
+where dept_emp.to_date > curdate()
+and salaries.to_date > curdate()
+group by dept_name
+order by average_salary DESC;
+
+# Exercise 8
+# Who is the highest paid employee in the Marketing department? 
+select first_name, last_name, salary
+from departments
+join dept_emp using(dept_no)
+join salaries using(emp_no)
+join employees using(emp_no)
+where salaries.to_date > curdate()
+and dept_emp.to_date > curdate()
+and dept_name = "Marketing"
+order by salary DESC
+limit 1;
+
+
+# Exercise 9
+# Which current department manager has the highest salary?
+select first_name, last_name, salary, dept_name
+from salaries
+join dept_manager using(emp_no)
+join departments using(dept_no)
+join employees using(emp_no)
+where salaries.to_date > curdate()
+and dept_manager.to_date > curdate()
+order by salary DESC
+limit 1;
 
