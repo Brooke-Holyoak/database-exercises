@@ -38,12 +38,38 @@ SELECT emp_no
 FROM employees
 WHERE first_name LIKE "Aamod"
 )
-AND to_date > NOW();
+AND to_date > NOW();  -- Results: Senior Staff, Engineer, Technique Leader, Senior Engineer, Staff and Assistant Engineer.
 
 
 ## 3. How many people in the employees table are no longer working for the company? Give the answer in a comment in your code.
 
+-- What tables do I need?  
+--		Employees (it's asking for a number directly from this table)
+--      
+
+select *
+from dept_emp
+where to_date < now(); -- while this includes former employees, it also includes employees who have switched depts
+
+select *
+from dept_emp
+where to_date > now(); /*this finds the current employees.  Now we can go to the employee table and find the employees NOT LIKE this.*/
+
+Select *
+FROM employees
+WHERE emp_no NOT IN (
+SELECT emp_no 
+FROM dept_emp
+WHERE to_date > now()
+);
+-- there are 59900 employees in the employee table who are not current
+
+
 ## 4. Find all the current department managers that are female. List their names in a comment in your code.
+
+
+
+
 
 ## 5. Find all the employees who currently have a higher salary than the companies overall, historical average salary.
 
