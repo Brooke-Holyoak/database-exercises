@@ -44,9 +44,21 @@ FROM dept_emp
 -- what am I trying to do?  I want to keep only the most recent to_date for employees
 ;
 
-SELECT emp_no, MAX(to_date)
+SELECT emp_no, MAX(to_date) 
 from dept_emp
-GROUP By emp_no; 
+GROUP By emp_no
+; 
+
+-- this gets me a result that only takes only the latest dates for the employees but I can't figure out how to connect this with the above.
+
+SELECT de.emp_no,
+    MAX(dnum.dept_no) as "Department Number",
+    MIN(de.from_date) as "Start Date", MAX(de.to_date) as "End Date",
+    IF (MAX(de.to_date) > NOW(), TRUE, FALSE) is_current_employee
+FROM dept_emp de
+LEFT JOIN (SELECT dept_no, emp_no FROM dept_emp
+WHERE to_date = (SELECT MAX(to_date) FROM dept_emp)) dnum using (emp_no)
+GROUP BY emp_no;
 
 
 -- 2. Write a query that returns all employee names (previous and current), and a new column 'alpha_group' that returns 'A-H', 'I-Q', or 'R-Z' depending on the first letter of their last name.
