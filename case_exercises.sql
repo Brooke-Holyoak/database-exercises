@@ -83,16 +83,5 @@ COUNT(*) AS count_of_decades
 	GROUP BY birth_decades
 	ORDER BY count_of_decades; 
 	
-END AS gen_age_cat,
-	COUNT(*) AS count_of_customers
-FROM customers
-GROUP BY gen_age_cat
-ORDER BY count_of_customers DESC;
+-- I could also first check out the MAX and MIN birthdate so I avoid adding unnecessary buckets.
 
-	
-COUNT(CASE WHEN title = 'Manager' THEN title ELSE NULL END) AS 'Manager'
-FROM departments
-JOIN dept_emp USING(dept_no)
-JOIN titles USING(emp_no)
-GROUP BY dept_name
-ORDER BY dept_name;	
