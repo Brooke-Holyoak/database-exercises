@@ -101,12 +101,13 @@ SELECT emp_no, salary
 FROM salaries
 WHERE to_date > NOW() AND
 salary >= (
-(SELECT MAX(salary)
-FROM salaries
-WHERE to_date > NOW())-
-(SELECT STDDEV(salary)
-FROM salaries
-WHERE to_date > NOW())
+	(SELECT MAX(salary)
+	FROM salaries
+	WHERE to_date > NOW())
+	-
+	(SELECT STDDEV(salary)
+	FROM salaries
+	WHERE to_date > NOW())
 );
 
 -- 83 current salaries are within 1 standard deviation of the current highest salary of 158220.
@@ -115,15 +116,15 @@ WHERE to_date > NOW())
 ##Below are individual queries used to build the above query and solution.
 SELECT STDDEV(salary)
 FROM salaries
-WHERE to_date > NOW();
+WHERE to_date > NOW(); -- 17309.959 standard deviation
 
 SELECT MAX(salary)
 FROM salaries
-WHERE to_date > NOW();
+WHERE to_date > NOW(); -- 158220 highest current salary
 
 SELECT salary
 FROM salaries
-WHERE to_date > NOW();
+WHERE to_date > NOW(); -- 240124 salaries
 
 
 
