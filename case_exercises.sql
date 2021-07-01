@@ -34,6 +34,21 @@ SELECT emp_no, dept_no, from_date, to_date,
 	AS "is_current_employee"
 FROM dept_emp;
 
+
+SELECT emp_no, dept_no, from_date, to_date,
+	IF (to_date > now(), TRUE, FALSE)
+	AS "is_current_employee"
+
+FROM dept_emp
+;
+-- what am I trying to do?  I want to keep only the most recent to_date for employees
+;
+
+SELECT emp_no, MAX(to_date)
+from dept_emp
+GROUP By emp_no; 
+
+
 -- 2. Write a query that returns all employee names (previous and current), and a new column 'alpha_group' that returns 'A-H', 'I-Q', or 'R-Z' depending on the first letter of their last name.
 
 SELECT first_name, last_name, 
@@ -66,7 +81,17 @@ SELECT first_name, last_name,
 	WHEN last_name LIKE 'Z%' THEN 'R-Z'
 	ELSE 'OTHER'
 	END AS alpha_group
-FROM employees; -- There HAS to be a shorter way to code this.  I get the right result, but that's ALOT to look at. ^^
+FROM employees; -- There HAS to be a shorter way to code this.  I get the right result, but that's ALOT to look at. ^^ BELOW is BETTER:
+
+SELECT first_name, last_name, 
+	CASE 
+	WHEN SUBSTRING(last_name, 1, 1) BETWEEN "A" and "H" THEN "A-H"
+	WHEN SUBSTRING(last_name, 1, 1) BETWEEN "I" and "Q" THEN "I-Q"
+	WHEN SUBSTRING(last_name, 1, 1) BETWEEN "R" and "Z" THEN "R-Z"
+	ELSE 'OTHER'
+	END AS alpha_group
+FROM employees; 
+
 
 -- 3. How many employees (current or previous) were born in each decade?
 
