@@ -16,7 +16,12 @@ WHERE hire_date IN (
 SELECT hire_date
 FROM employees
 WHERE emp_no LIKE "101010" -- 1990-10-22
-) ;  -- There are 69 employees with the same hire date, including employee 101010
+)
+AND 
+emp_no IN (
+SELECT emp_no
+FROM salaries
+WHERE to_date > NOW());  -- There are 69 employees with the same hire date, including employee 101010
 
 
 
@@ -55,7 +60,7 @@ select *
 from dept_emp
 where to_date > now(); /*this finds the current employees.  Now we can go to the employee table and find the employees NOT LIKE this.*/
 
-Select *
+Select count(*)
 FROM employees
 WHERE emp_no NOT IN (
 SELECT emp_no 
@@ -75,20 +80,24 @@ WHERE emp_no IN (
 SELECT emp_no 
 FROM dept_manager
 WHERE to_date > now()
-);
+)
+AND
+gender LIKE "F";  -- Isamu Legleitner, Karsten Sigstam, Leon DasSarma, Hilary Kambil
 
 ## 5. Find all the employees who currently have a higher salary than the companies overall, historical average salary.
 
 -- What tables do I need? Salaries
 -- What do I need to do?  find the average salary from all salaries.  then find which current employees have a salary that is greater than that
 -- value.
-
-SELECT emp_no, salary
+SELECT *
+FROM employees 
+WHERE emp_no IN
+(SELECT emp_no
 FROM salaries
 WHERE to_date > NOW() AND
 salary > (
 SELECT AVG(salary) FROM salaries
-);
+));
 
 
 
@@ -97,7 +106,7 @@ SELECT AVG(salary) FROM salaries
 -- What tables do I need? Salaries
 -- What do I need to do? Find current salaries. Find the highest or MAX salary. Find the STDDEV. Find which salaries are within one STDDEV.
 
-SELECT emp_no, salary
+SELECT count(*)
 FROM salaries
 WHERE to_date > NOW() AND
 salary >= (
