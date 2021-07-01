@@ -67,10 +67,63 @@ WHERE to_date > now()
 
 ## 4. Find all the current department managers that are female. List their names in a comment in your code.
 
+-- What tables do I need? dept_manager to find current managers, and employees to get names and gender
 
-
-
+SELECT first_name, last_name, gender
+FROM employees
+WHERE emp_no IN (
+SELECT emp_no 
+FROM dept_manager
+WHERE to_date > now()
+);
 
 ## 5. Find all the employees who currently have a higher salary than the companies overall, historical average salary.
 
+-- What tables do I need? Salaries
+-- What do I need to do?  find the average salary from all salaries.  then find which current employees have a salary that is greater than that
+-- value.
+
+SELECT emp_no, salary
+FROM salaries
+WHERE to_date > NOW() AND
+salary > (
+SELECT AVG(salary) FROM salaries
+);
+
+
+
 ## 6. How many current salaries are within 1 standard deviation of the current highest salary? (Hint: you can use a built in function to calculate the standard deviation.) What percentage of all salaries is this?
+
+-- What tables do I need? Salaries
+-- What do I need to do? Find current salaries. Find the highest or MAX salary. Find the STDDEV. Find which salaries are within one STDDEV.
+
+SELECT emp_no, salary
+FROM salaries
+WHERE to_date > NOW() AND
+salary >= (
+(SELECT MAX(salary)
+FROM salaries
+WHERE to_date > NOW())-
+(SELECT STDDEV(salary)
+FROM salaries
+WHERE to_date > NOW())
+);
+
+-- 83 current salaries are within 1 standard deviation of the current highest salary of 158220.
+-- 83/2582043 = .003% of all salaries ever. 83/240124 = .0035% of current salaries.
+
+##Below are individual queries used to build the above query and solution.
+SELECT STDDEV(salary)
+FROM salaries
+WHERE to_date > NOW();
+
+SELECT MAX(salary)
+FROM salaries
+WHERE to_date > NOW();
+
+SELECT salary
+FROM salaries
+WHERE to_date > NOW();
+
+
+
