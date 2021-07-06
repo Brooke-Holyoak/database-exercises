@@ -78,7 +78,7 @@ SET amount = amount * 100; -- initially gave an error that row 44 was too large.
 ALTER TABLE new_payment_amounts modify amount INT; -- now amounts have been changed. 
 
 
-/*Find out how the current average pay in each department compares to the overall, historical average pay. In order to make the comparison easier, you should use the Z-score for salaries. In terms of salary, what is the best department right now to work for? The worst?*/
+/* 3.  Find out how the current average pay in each department compares to the overall, historical average pay. In order to make the comparison easier, you should use the Z-score for salaries. In terms of salary, what is the best department right now to work for? The worst?*/
 
 USE employees; 
 
