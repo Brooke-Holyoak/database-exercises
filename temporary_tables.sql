@@ -131,7 +131,7 @@ set zscore = numerator/denominator;
 
 -- Now do a query to get the average salary by dept and the zscores in relation to the overall historic salary average.
 
-SELECT dept_no, avg(salary), avg(zscore)
+SELECT dept_no, avg(salary) AS Current_Dept_Average, avg(zscore) AS ZScore_from_historic_dept_avg
 FROM germain_1475.department_salaries
 WHERE salary_to_date > now()
 GROUP BY dept_no
