@@ -50,6 +50,33 @@ DROP COLUMN last_name;
 -- another way to create this table would be to create the full_name column by using the data from the employees.employees table.  
 
 
+/* 2. Create a temporary table based on the payment table from the sakila database.
+
+Write the SQL necessary to transform the amount column such that it is stored as an integer representing the number of cents of the payment. For example, 1.99 should become 199. */
+
+USE sakila; 
+
+describe payment; 
+
+CREATE TEMPORARY TABLE germain_1475.new_payment_amounts AS
+SELECT payment_id, customer_id, staff_id, rental_id, amount, payment_date, last_update
+FROM payment;
+
+USE germain_1475;
+
+SELECT *
+FROM new_payment_amounts;
+
+DESCRIBE new_payment_amounts;
+
+ALTER TABLE new_payment_amounts modify amount decimal(7,2);
+
+UPDATE new_payment_amounts
+SET amount = amount * 100; -- initially gave an error that row 44 was too large.  see above for modifying how many characters can be in amount.
+-- this changes amount to have two decimal places, we want just a whole number without decimals.
+
+ALTER TABLE new_payment_amounts modify amount INT; -- now amounts have been changed. 
+
 
 
 
