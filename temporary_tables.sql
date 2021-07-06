@@ -78,6 +78,66 @@ SET amount = amount * 100; -- initially gave an error that row 44 was too large.
 ALTER TABLE new_payment_amounts modify amount INT; -- now amounts have been changed. 
 
 
+/*Find out how the current average pay in each department compares to the overall, historical average pay. In order to make the comparison easier, you should use the Z-score for salaries. In terms of salary, what is the best department right now to work for? The worst?*/
+
+USE employees; 
+
+Select avg(salary)
+FROM salaries 
+WHERE to_date > now(); -- current average salary is 72012.2359
+
+-- the above is the current OVERALL average salary, not by department.
+
+SELECT * 
+from salaries;
+
+SELECT * 
+from dept_emp;
+
+CREATE TEMPORARY TABLE germain_1475.department_salaries AS
+SELECT emp_no, salary, salaries.to_date AS salary_to_date, dept_no, dept_emp.to_date AS dept_to_date
+FROM salaries
+JOIN dept_emp USING(emp_no); 
+
+SELECT dept_no, avg(salary)
+FROM germain_1475.department_salaries
+WHERE salary_to_date > now()
+GROUP BY dept_no; -- checking to be sure I can see the current salaries by dept in my temp table.
+
+-- now I will add the columns I need to get the zscores.
+
+ALTER TABLE germain_1475.department_salaries ADD zscore float(10, 3);
+
+ALTER TABLE germain_1475.department_salaries
+ADD numerator INT;
+
+ALTER TABLE germain_1475.department_salaries
+ADD denominator INT;
+
+select * 
+FROM germain_1475.department_salaries
+LIMIT 50; 
+
+-- all columns needed are created (zscore, numerator, and denominator).  Now set up these columns to have the needed data.
+
+UPDATE germain_1475.department_salaries
+SET numerator = salary - (select avg(salary) from salaries);
+
+UPDATE germain_1475.department_salaries
+SET denominator = (select STD(salary) from salaries);
+
+update germain_1475.department_salaries
+set zscore = numerator/denominator; 
+
+-- Now do a query to get the average salary by dept and the zscores in relation to the overall historic salary average.
+
+SELECT dept_no, avg(salary), avg(zscore)
+FROM germain_1475.department_salaries
+WHERE salary_to_date > now()
+GROUP BY dept_no
+ORDER BY avg(zscore);
+
+-- best dept to work for currently would be dept 7, and the worst would be dept 3
 
 
 
@@ -88,6 +148,53 @@ ALTER TABLE new_payment_amounts modify amount INT; -- now amounts have been chan
 
 
 
--- 2. Create a temporary table based on the payment table from the sakila database.
+
+
+
+###scratch work below###
+/*create temporary table ryan.zscore AS
+select n, 
+n - (select avg(n) from numbers) as "numerator", 
+(select std(n) from numbers) as "denominator"
+from numbers;*/
+
+CREATE TEMPORARY TABLE germain_1475.zscores AS
+select salary, salary - (select avg(salary) from salaries) as "numerator", (select STD(salary) from salaries) AS "denominator"
+FROM salaries;
+
+/*use ryan;
+
+-- add a new column to the temp table
+alter table zscore add zscore float(10, 3);
+
+-- set the values for that column on the temp table
+update zscore set zscore = numerator / denominator;
+
+-- zscore = (x - avg(x)) / std(x)
+select * from zscore;*/
+
+use germain_1475; 
+
+alter table zscores add zscore float(10, 3);
+
+
+
+update zscores set zscore = numerator/denominator; 
+
+select * from zscores; 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
